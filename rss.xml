@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Manohar's Blog]]></title><description><![CDATA[Stuff I've worked on or found interesting.]]></description><link>https://manohar27.github.io</link><generator>GatsbyJS</generator><lastBuildDate>Mon, 23 Sep 2019 16:48:55 GMT</lastBuildDate><item><title><![CDATA[How to leverage multi-stage docker build to trim down the image size?]]></title><description><![CDATA[So you use docker and you’ve written a Dockerfile that looks neat and everything looks and runs great. But if you look at your docker image…]]></description><link>https://manohar27.github.io/docker-multi-stage/</link><guid isPermaLink="false">https://manohar27.github.io/docker-multi-stage/</guid><pubDate>Mon, 23 Sep 2019 15:59:25 GMT</pubDate><content:encoded>&lt;p&gt;So you use docker and you’ve written a Dockerfile that looks neat and everything looks and runs great. But if you look at your docker image sizes, it might be huge. It was in my case at work, and it kind of defeated the purpose of using containers.&lt;/p&gt;
+&lt;p&gt;Here’s something you can do quickly to drop some serious bytes from your Docker Image size. &lt;/p&gt;
+&lt;p&gt;Change your Dockerfile from something like this&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;FROM node:8.16
+RUN npm install
+RUN npm run build #lets say this generates your build bundles (dist folder)
+CMD [&amp;quot;npm&amp;quot;, &amp;quot;run&amp;quot;, &amp;quot;start&amp;quot;]&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;To something like this&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;FROM node:8.16 as builder
+RUN npm install
+RUN npm run build
+
+FROM node:8.16 as production
+COPY --from=builder /dist ./
+#COPY more stuff from builder like your ./server/node_modules and ./server/ whatever you need from your builder image
+CMD [&amp;quot;npm&amp;quot;, &amp;quot;run&amp;quot;, &amp;quot;start&amp;quot;]&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Okay so here’s what you did with this “multi-stage” build.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;You created an intermediate image (&lt;strong&gt;builder)&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;You use the &lt;strong&gt;builder&lt;/strong&gt; to install stuff you need ( this could even include a lot of stuff you don’t need in production like acceptance testing tools etc)&lt;/li&gt;
+&lt;li&gt;But when you want the &lt;strong&gt;production&lt;/strong&gt; image, you pick and choose what parts of &lt;strong&gt;builder&lt;/strong&gt; you need, for e.g here I’m just copying the dist folder.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;production&lt;/strong&gt; image starts FROM node:8.16, it just adds one more layer on top to copy the dist folder&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;But how did this help? Every docker instruction adds a bunch of size to your image. Every RUN, ADD, COPY adds to your image size. If you have fewer instructions, then you can reduce your image size. Using multi-stage build is a clean way to achieve fewer instructions.&lt;/p&gt;
+&lt;p&gt;You can go through &lt;a href=&quot;https://docs.docker.com/develop/develop-images/dockerfile_best-practices/&quot;&gt;this link&lt;/a&gt; to find some cool best practice tips to write Dockerfiles.&lt;/p&gt;</content:encoded></item></channel></rss>
