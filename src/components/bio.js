@@ -6,7 +6,7 @@
  */
 
 import React from "react"
-import { useStaticQuery, graphql } from "gatsby"
+import { useStaticQuery, graphql, Link } from "gatsby"
 import Image from "gatsby-image"
 
 import { rhythm } from "../utils/typography"
@@ -54,8 +54,12 @@ const Bio = () => {
         }}
       />
       <p>
-        Hi! I'm <strong>{author}</strong> from Bengaluru and this is my blog, I
-        write about things I find interesting.
+        Hi! I'm{" "}
+        <strong>
+          <Link to={"/about-me"}>{author}</Link>
+        </strong>{" "}
+        from Bengaluru and this is my blog, I write about things I find
+        interesting.
         {` `}
         You could follow my
         <a href={`https://instagram.com/${social.instagram}`}>

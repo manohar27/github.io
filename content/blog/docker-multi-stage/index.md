@@ -9,23 +9,25 @@ So you use docker and you've written a Dockerfile that looks neat and everything
 Here's something you can do quickly to drop some serious bytes from your Docker Image size. 
 
 Change your Dockerfile from something like this
-
-    FROM node:8.16
-    RUN npm install
-    RUN npm run build #lets say this generates your build bundles (dist folder)
-    CMD ["npm", "run", "start"]
+```docker
+FROM node:8.16
+RUN npm install
+RUN npm run build #lets say this generates your build bundles (dist folder)
+CMD ["npm", "run", "start"]
+```
     
 
 To something like this
+```docker
+FROM node:8.16 as builder
+RUN npm install
+RUN npm run build
 
-    FROM node:8.16 as builder
-    RUN npm install
-    RUN npm run build
-    
-    FROM node:8.16 as production
-    COPY --from=builder /dist ./
-    #COPY more stuff from builder like your ./server/node_modules and ./server/ whatever you need from your builder image
-    CMD ["npm", "run", "start"]
+FROM node:8.16 as production
+COPY --from=builder /dist ./
+#COPY more stuff from builder like your ./server/node_modules and ./server/ whatever you need from your builder image
+CMD ["npm", "run", "start"]
+```
     
     
 

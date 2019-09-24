@@ -7,6 +7,9 @@ module.exports = {
     social: {
       twitter: `mbmanohars`,
       instagram: `manoharsrinivasa`,
+      goodReads: `https://www.goodreads.com/user/show/22345143-manohar-srinivasa`,
+      spotify: `https://open.spotify.com/playlist/37i9dQZF1Eph6SrWEz8mci?si=EI_zR6CfSiqXNv-hBMuIvQ  `,
+      linkedIn: `https://www.linkedin.com/in/manohar-srinivasa-a8962884/`,
     },
   },
   plugins: [
