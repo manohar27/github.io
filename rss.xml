@@ -1,4 +1,39 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Manohar's Blog]]></title><description><![CDATA[Stuff I've worked on or found interesting.]]></description><link>https://manohar27.github.io</link><generator>GatsbyJS</generator><lastBuildDate>Tue, 24 Sep 2019 15:01:20 GMT</lastBuildDate><item><title><![CDATA[How to leverage multi-stage docker build to trim down the image size?]]></title><description><![CDATA[So you use docker and you’ve written a Dockerfile that looks neat and everything looks and runs great. But if you look at your docker image…]]></description><link>https://manohar27.github.io/docker-multi-stage/</link><guid isPermaLink="false">https://manohar27.github.io/docker-multi-stage/</guid><pubDate>Mon, 23 Sep 2019 15:59:25 GMT</pubDate><content:encoded>&lt;p&gt;So you use docker and you’ve written a Dockerfile that looks neat and everything looks and runs great. But if you look at your docker image sizes, it might be huge. It was in my case at work, and it kind of defeated the purpose of using containers.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Manohar's Blog]]></title><description><![CDATA[Stuff I've worked on or found interesting.]]></description><link>https://manohar27.github.io</link><generator>GatsbyJS</generator><lastBuildDate>Wed, 02 Oct 2019 08:31:58 GMT</lastBuildDate><item><title><![CDATA[How to make a Heptagram with SVG ?]]></title><description><![CDATA[I’m a huge fan of the band Tool and with their latest album they used a lot of 7s in the music and in the artwork.  The artwork contained a…]]></description><link>https://manohar27.github.io/heptagram-svg/</link><guid isPermaLink="false">https://manohar27.github.io/heptagram-svg/</guid><pubDate>Wed, 02 Oct 2019 08:16:19 GMT</pubDate><content:encoded>&lt;p&gt;I’m a huge fan of the band Tool and with their latest album they used a lot of 7s in the music and in the artwork. &lt;/p&gt;
+&lt;p&gt;The artwork contained a bunch of Heptagrams which is a seven sided polygon but internally connected.&lt;/p&gt;
+&lt;p&gt;Here’s what it looks like&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.redd.it/j89n39zl8gy21.jpg&quot;&gt;&lt;/p&gt;
+&lt;p&gt;I wanted to see if I could draw the &lt;a href=&quot;https://en.wikipedia.org/wiki/Heptagram&quot;&gt;heptagram&lt;/a&gt; using svg and javascript.&lt;/p&gt;
+&lt;h2&gt;Initial approach&lt;/h2&gt;
+&lt;p&gt;I thought at first I can just try to draw one edge at a time. Keeping the internal angle of 77.143deg between them. This turned out very tricky as &amp;#x3C;Line/&gt; and &amp;#x3C;Path/&gt; didn’t work based on angles or radians. So I looked at how to draw it on paper.&lt;/p&gt;
+&lt;h2&gt;So how do you draw one on paper?&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Get the seven vertices of a regular heptagon&lt;/li&gt;
+&lt;li&gt;Join alternate vertices&lt;/li&gt;
+&lt;li&gt;And that’s it you have a 7/2 heptagram&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Let’s do it with SVG now, using the same approach&lt;/h2&gt;
+&lt;h3&gt;Finding the 7 vertices&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;First draw a &amp;#x3C;Circle /&gt;&lt;/li&gt;
+&lt;li&gt;Divide the circle into 7 pieces ( 360 deg divided by 7 = 51.4deg)&lt;/li&gt;
+&lt;li&gt;Take the sine and cosine of incrementing angles(0, 51.4deg, 51.4deg * 2, 51.4deg * 3…)  to find the x,y co-ordinates on the circle&lt;/li&gt;
+&lt;li&gt;That’s it, getting these vertices solves most of our problems&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Joining alternate vertices&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Now that we have the vertices (x,y co-ordinates), we’ve to join them&lt;/li&gt;
+&lt;li&gt;All we do now is take alternate vertices and draw a &amp;#x3C;Line /&gt; between them&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Then add some animation jazz and you have a cool heptagram in SVG&lt;/h3&gt;
+&lt;p&gt;TLDR; Here’s the codepen link
+&lt;a href=&quot;https://codepen.io/mbmanohars/pen/vYBoxVY&quot;&gt;&lt;div&gt;&lt;iframe 
+        height=&apos;400&apos; 
+        scrolling=&apos;no&apos; 
+        src=&apos;//codepen.io/mbmanohars/embed/preview/vYBoxVY/?height=400&amp;theme-id=dark&amp;default-tab=html,result&apos; 
+        frameborder=&apos;no&apos; 
+        allowtransparency=&apos;true&apos; 
+        allowfullscreen=&apos;true&apos; 
+        style=&apos;width: 100%;&apos;&gt;&lt;/iframe&gt;&lt;/div&gt;&lt;/a&gt;&lt;/p&gt;</content:encoded></item><item><title><![CDATA[How to leverage multi-stage docker build to trim down the image size?]]></title><description><![CDATA[So you use docker and you’ve written a Dockerfile that looks neat and everything looks and runs great. But if you look at your docker image…]]></description><link>https://manohar27.github.io/docker-multi-stage/</link><guid isPermaLink="false">https://manohar27.github.io/docker-multi-stage/</guid><pubDate>Mon, 23 Sep 2019 15:59:25 GMT</pubDate><content:encoded>&lt;p&gt;So you use docker and you’ve written a Dockerfile that looks neat and everything looks and runs great. But if you look at your docker image sizes, it might be huge. It was in my case at work, and it kind of defeated the purpose of using containers.&lt;/p&gt;
 &lt;p&gt;Here’s something you can do quickly to drop some serious bytes from your Docker Image size. &lt;/p&gt;
 &lt;p&gt;Change your Dockerfile from something like this&lt;/p&gt;
 &lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;docker&quot;&gt;&lt;pre class=&quot;language-docker&quot;&gt;&lt;code class=&quot;language-docker&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; node&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;8.16
