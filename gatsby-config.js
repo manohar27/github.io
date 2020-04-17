@@ -1,6 +1,6 @@
 module.exports = {
   siteMetadata: {
-    title: `Manohar's Blog`,
+    title: `lateralus`,
     author: `Manohar Srinivasa`,
     description: `Stuff I've worked on or found interesting.`,
     siteUrl: `https://manohar27.github.io/`,
@@ -61,13 +61,13 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `Gatsby Starter Blog`,
-        short_name: `GatsbyJS`,
+        name: `lateralus.xyz Blog`,
+        short_name: `lateralus.xyz`,
         start_url: `/`,
         background_color: `#ffffff`,
         theme_color: `#663399`,
         display: `minimal-ui`,
-        icon: `content/assets/gatsby-icon.png`,
+        icon: `content/assets/blog_logo.png`,
       },
     },
     `gatsby-plugin-offline`,
