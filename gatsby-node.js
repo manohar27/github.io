@@ -1,6 +1,10 @@
 const path = require(`path`)
 const { createFilePath } = require(`gatsby-source-filesystem`)
 
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV}`,
+})
+
 exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions
 
