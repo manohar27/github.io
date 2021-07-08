@@ -1,4 +1,66 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[lateralus]]></title><description><![CDATA[Stuff I've worked on or found interesting.]]></description><link>https://manohar27.github.io</link><generator>GatsbyJS</generator><lastBuildDate>Wed, 22 Apr 2020 16:40:29 GMT</lastBuildDate><item><title><![CDATA[How to make a Heptagram with SVG ?]]></title><description><![CDATA[I’m a huge fan of the band Tool and with their latest album they used a lot of 7s in the music and in the artwork.  The artwork contained a…]]></description><link>https://manohar27.github.io/heptagram-svg/</link><guid isPermaLink="false">https://manohar27.github.io/heptagram-svg/</guid><pubDate>Wed, 02 Oct 2019 08:16:19 GMT</pubDate><content:encoded>&lt;p&gt;I’m a huge fan of the band Tool and with their latest album they used a lot of 7s in the music and in the artwork. &lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[lateralus]]></title><description><![CDATA[Stuff I've worked on or found interesting.]]></description><link>https://manohar27.github.io</link><generator>GatsbyJS</generator><lastBuildDate>Thu, 08 Jul 2021 09:59:26 GMT</lastBuildDate><item><title><![CDATA[The Content-Length story]]></title><description><![CDATA[TLDR; The fix is therefore to use Buffer.from(string).length to set  instead of string.length. What’s Content-Length? It’s an HTTP header…]]></description><link>https://manohar27.github.io/content-length/</link><guid isPermaLink="false">https://manohar27.github.io/content-length/</guid><pubDate>Sat, 07 Aug 2021 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;em&gt;TLDR; The fix is therefore to use Buffer.from(string).length to set &lt;code class=&quot;language-text&quot;&gt;Content-Length&lt;/code&gt; instead of string.length.&lt;/em&gt;&lt;/p&gt;
+&lt;h2&gt;What’s Content-Length?&lt;/h2&gt;
+&lt;p&gt;It’s an HTTP header both the client and the server use to denote the size of the request/response body.&lt;/p&gt;
+&lt;h2&gt;Story time&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Was working with a POST API endpoint that expected some text in the request body. &lt;/li&gt;
+&lt;li&gt;The code was already in place and we faced issues where some requests were failing and we couldn’t reproduce it in other environments.
+(&lt;em&gt;Mistake: Didn’t use the exact same text to reproduce in other env&lt;/em&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.imgur.com/J5nr5LQ.jpg?fb&quot;&gt;&lt;/p&gt;
+&lt;p&gt;After spending hours and days debugging this issue, we found out that the API was returning a JSON parse error. &lt;/p&gt;
+&lt;p&gt;The request body that looked something like this&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;{
+  &amp;quot;text&amp;quot;: &amp;quot;Madam I’m Adam&amp;quot;
+}&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Simple json, JSON parse error? Whaat? &lt;/p&gt;
+&lt;p&gt;The culprit : &lt;code class=&quot;language-text&quot;&gt;Content-Length&lt;/code&gt;. &lt;/p&gt;
+&lt;p&gt;The call looked something like this&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;fetch(url, {
+  headers: {
+    &amp;#39;Content-Type&amp;#39;: &amp;#39;application/json&amp;#39;,
+    &amp;#39;Content-Length`: requestBody.length
+  },
+  body: requestBody
+})&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;The Issue&lt;/h2&gt;
+&lt;p&gt; When there’s a non ascii, multi-byte character, such as this apostrophe for example &lt;code class=&quot;language-text&quot;&gt;’&lt;/code&gt;, which is different from the regular &lt;code class=&quot;language-text&quot;&gt;&amp;#39;&lt;/code&gt;, string.length can’t be used to calculate &lt;code class=&quot;language-text&quot;&gt;Content-Length&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt; While string.length gives the size of the string, it is only the character count. It’s not the actual size the string takes up in bytes/octets.&lt;/p&gt;
+&lt;p&gt; MDN &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Length&quot;&gt;says &lt;code class=&quot;language-text&quot;&gt;Content-Length&lt;/code&gt;&lt;/a&gt; is &lt;code class=&quot;language-text&quot;&gt;The length in decimal number of octets.&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;See the difference here. We can use Buffer.from(string).length to get the actual size of the string&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 288px;&quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/3bf044ab27087a5a7cb12cfe8bcefbfd/337b6/non-ascii-char-lengths.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 51.041666666666664%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAYAAAC0VX7mAAAACXBIWXMAAAsSAAALEgHS3X78AAABZklEQVQoz31S2W7CQBDLTyAICQlJy5L7PoEE8RX8/5e465EWVW3pw2hmj/HY3rX8MESQKpzKCKpOkPUl2rZFFEU4HA7wPO9XcP/dmZXnH4ijAI7tIlJn3C5XPB4PnM9n7Pd7uK4Lx3Gktm1bsgH7C9RSykNVx+j6AU3bQCmFOI6FZZ7nUidJgrIs0fc96rr+n2GcBJimAl3XSxNB0jTFsiwCToYEbZpG9njnHTsBjKKjbgg14IB5nlAUhQDSw67rcLlcpOYgsjaA70J7GGKaPX2ZDFZhQv8IOgwcMiMIApG6rqsA0svdbifsjbcMstYe+rjfM4zjIE2UR5bjOL4ypZIhveSg2+0mwbqqKm3ZJEpC/WOsoiDgpz5oBNA8BJllWSYsjXdmGAEY9Jj3r9erPBiVWCfl4vm8a6ktNpuNfBEGJTFTyna7FWnm+/Dsu2TWL8med9TTFqHOBt/3xVyTf9Zm/XPPxBf6BiLCcnfdEwAAAABJRU5ErkJggg==&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;image&quot;
+        title=&quot;image&quot;
+        src=&quot;/static/3bf044ab27087a5a7cb12cfe8bcefbfd/337b6/non-ascii-char-lengths.png&quot;
+        srcset=&quot;/static/3bf044ab27087a5a7cb12cfe8bcefbfd/cf440/non-ascii-char-lengths.png 148w,
+/static/3bf044ab27087a5a7cb12cfe8bcefbfd/337b6/non-ascii-char-lengths.png 288w&quot;
+        sizes=&quot;(max-width: 288px) 100vw, 288px&quot;
+        loading=&quot;lazy&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;So string.length gives a lower value than the actual size of the request body. API looks at the lower Content-Length chops off the last few bytes, what that means is the request might end up lookin like this&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;{
+  &amp;quot;text&amp;quot;: &amp;quot;Madam I’m Adam&amp;quot;&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Notice the missing &lt;code class=&quot;language-text&quot;&gt;}&lt;/code&gt;. This causes the JSON parse error. &lt;/p&gt;
+&lt;p&gt;The fix is therefore to use Buffer.from(string).length to set &lt;code class=&quot;language-text&quot;&gt;Content-Length&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;FYI: GET with Request Body requires us to send Content-Length header explicitly, whereas for PUT &amp;#x26; POST you can choose to not send it.&lt;/em&gt;&lt;/p&gt;</content:encoded></item><item><title><![CDATA[How to make a Heptagram with SVG ?]]></title><description><![CDATA[I’m a huge fan of the band Tool and with their latest album they used a lot of 7s in the music and in the artwork.  The artwork contained a…]]></description><link>https://manohar27.github.io/heptagram-svg/</link><guid isPermaLink="false">https://manohar27.github.io/heptagram-svg/</guid><pubDate>Wed, 02 Oct 2019 08:16:19 GMT</pubDate><content:encoded>&lt;p&gt;I’m a huge fan of the band Tool and with their latest album they used a lot of 7s in the music and in the artwork. &lt;/p&gt;
 &lt;p&gt;The artwork contained a bunch of Heptagrams which is a seven sided polygon but internally connected.&lt;/p&gt;
 &lt;p&gt;Here’s what it looks like&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;https://i.redd.it/j89n39zl8gy21.jpg&quot;&gt;&lt;/p&gt;
