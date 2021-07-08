@@ -1,6 +1,6 @@
 ---
 title: The Content-Length story
-date: '2021-08-07'
+date: '2021-07-08'
 description: Javascript's string.length vs Buffer.from(string).length, understanding how to set Content-Length header
 ---
 
